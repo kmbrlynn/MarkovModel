@@ -5,7 +5,7 @@
 class MarkovModel {
  public:
 	MarkovModel(std::string text, int k);
-	~MarkovModel();f
+	~MarkovModel();
 	
 	int order();
 	int freq(std::string kgram);
@@ -17,6 +17,6 @@ class MarkovModel {
 
  private:
 	int _order;
-	map <std::string, int> _kgrams;
+	std::map <std::string, int> _kgrams;
 	std::string _alphabet;
 };
