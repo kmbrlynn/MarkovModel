@@ -1,5 +1,6 @@
 // Copyright Kim Doglas 2015
 #include <map>
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -15,7 +16,7 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
     _alpha.erase(std::unique(_alpha.begin(), _alpha.end()), _alpha.end());
 
     for (unsigned int i = 0; i < text.length(); i++) {
-        kgram_back = i+k-1;
+        kgram_back = i+k;
 
         // Get the current kgram
         if (kgram_back >= text.length()) { 
@@ -26,8 +27,10 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
             kgram_str = text.substr(i, text.length()-1);
             kgram_str.append(wrap_str);
         } else { 
-            kgram_str = text.substr(i, kgram_back);
+            kgram_str = text.substr(i, k);
         }        
+
+        std::cout << kgram_str << std::endl << std::endl;
 
         // Put it in the map, or tally the existing one
         std::map<std::string, int>::iterator it = _kgrams.find(kgram_str);
@@ -64,8 +67,10 @@ std::string MarkovModel::gen(std::string kgram, int t) {
 
 // ==================================================================== friends
 std::ostream& operator << (std::ostream& os, MarkovModel& mm) {
-    std::map<std::string, char>::iterator it;        
-
+    std::map<std::string, int>::iterator it;
+    for (it = mm._kgrams.begin(); it != mm._kgrams.end(); ++it) {
+        std::cout << it->first << " " << it->second << std::endl;
+    }
 }
 
 
