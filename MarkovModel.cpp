@@ -1,10 +1,13 @@
 // Copyright Kim Doglas 2015
 #include <map>
-#include <cmath>
+#include <exception>
+#include <stdexcept>
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include "MarkovModel.hpp"
+
+std::string freq_error = "freq(std::string): kgram length may not exceed order";
 
 // ============================================================ con/destructors
 MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) { 
@@ -30,7 +33,7 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
             kgram_str = text.substr(i, k);
         }        
 
-        std::cout << kgram_str << std::endl << std::endl;
+    //    std::cout << kgram_str << std::endl << std::endl;
 
         // Put it in the map, or tally the existing one
         std::map<std::string, int>::iterator it = _kgrams.find(kgram_str);
@@ -50,7 +53,12 @@ int MarkovModel::order() {
 }
 
 int MarkovModel::freq(std::string kgram) {
-
+    if (kgram.length() != _order) throw std::runtime_error(freq_error);
+    std::map<std::string, int>::iterator it = _kgrams.find(kgram);
+    if (it != _kgrams.end())
+        return it-> second;
+    else
+       return 0;
 }
 
 int MarkovModel::freq(std::string kgram, char c) {
