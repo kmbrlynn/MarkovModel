@@ -1,13 +1,18 @@
 // Copyright Kim Doglas 2015
 #include <map>
+#include <iostream>
 #include <string>
+#include <algorithm>
 #include "MarkovModel.hpp"
 
 // ============================================================ con/destructors
-MarkovModel::MarkovModel(std::string text, int k) : _order(k) {
-                  
+MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) { 
     std::string kgram_str, wrap_str;
     int kgram_back, wrap_back;
+
+    // Parse the alphabet out of the string of text
+    std::sort(_alpha.begin(), _alpha.end());
+    _alpha.erase(std::unique(_alpha.begin(), _alpha.end()), _alpha.end());
 
     for (unsigned int i = 0; i < text.length(); i++) {
         kgram_back = i+k-1;
