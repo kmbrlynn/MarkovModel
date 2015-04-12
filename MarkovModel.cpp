@@ -1,4 +1,4 @@
-// Copyright Kim Doglas 2015
+// Copyright Kim Douglas 2015
 #include <map>
 #include <exception>
 #include <stdexcept>
@@ -7,7 +7,7 @@
 #include <algorithm>
 #include "MarkovModel.hpp"
 
-std::string freq_error = "freq(std::string): kgram length may not exceed order";
+std::string freq_err = "freq(string, [int]): kgram length musn't exceed order";
 
 // ============================================================ con/destructors
 MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) { 
@@ -17,6 +17,12 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
     // Parse the alphabet out of the string of text
     std::sort(_alpha.begin(), _alpha.end());
     _alpha.erase(std::unique(_alpha.begin(), _alpha.end()), _alpha.end());
+
+    // assign each unique _alpha character a 'tally' variable
+    // so, maintain 3 for this example - a, g, c
+    // check against each tally var when you have a kgram collision
+    // store in member vector?
+
 
     for (unsigned int i = 0; i < text.length(); i++) {
         kgram_back = i+k;
@@ -32,8 +38,6 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
         } else { 
             kgram_str = text.substr(i, k);
         }        
-
-    //    std::cout << kgram_str << std::endl << std::endl;
 
         // Put it in the map, or tally the existing one
         std::map<std::string, int>::iterator it = _kgrams.find(kgram_str);
@@ -53,7 +57,7 @@ int MarkovModel::order() {
 }
 
 int MarkovModel::freq(std::string kgram) {
-    if (kgram.length() != _order) throw std::runtime_error(freq_error);
+    if (kgram.length() != _order) throw std::runtime_error(freq_err);
     std::map<std::string, int>::iterator it = _kgrams.find(kgram);
     if (it != _kgrams.end())
         return it-> second;
@@ -62,7 +66,7 @@ int MarkovModel::freq(std::string kgram) {
 }
 
 int MarkovModel::freq(std::string kgram, char c) {
-
+    if (kgram.length() != _order) throw std::runtime_error(freq_err);
 }
 
 char MarkovModel::randk(std::string kgram) {
