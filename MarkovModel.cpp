@@ -4,25 +4,24 @@
 #include "MarkovModel.hpp"
 
 // ============================================================ con/destructors
-MarkovModel::MarkovModel(std::string text, int k) : 
-                                    _alphabet(text), _order(k) {
+MarkovModel::MarkovModel(std::string text, int k) : _order(k) {
                   
     std::string kgram_str, wrap_str;
     int kgram_back, wrap_back;
 
-    for (unsigned int i = 0; i < _alphabet.length(); i++) {
+    for (unsigned int i = 0; i < text.length(); i++) {
         kgram_back = i+k-1;
 
         // Get the current kgram
-        if (kgram_back >= _alphabet.length()) { 
+        if (kgram_back >= text.length()) { 
             // grab the wraparound chunk
-            wrap_back = kgram_back - _alphabet.length();
-            wrap_str = _alphabet.substr(0, wrap_back);
+            wrap_back = kgram_back - text.length();
+            wrap_str = text.substr(0, wrap_back);
             // append to the truncated kgram
-            kgram_str = _alphabet.substr(i, _alphabet.length()-1);
+            kgram_str = text.substr(i, text.length()-1);
             kgram_str.append(wrap_str);
         } else { 
-            kgram_str = _alphabet.substr(i, kgram_back);
+            kgram_str = text.substr(i, kgram_back);
         }        
 
         // Put it in the map, or tally the existing one
