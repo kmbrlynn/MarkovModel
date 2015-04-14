@@ -8,10 +8,13 @@
 #include "MarkovModel.hpp"
 
 std::string freq_err = "freq(string, [int]): kgram length musn't exceed order";
+std::string con_err = "constructor: test must be at least as long as order";
 
 // ============================================================ con/destructors
 MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) { 
     int kgram_back, kplus_back;
+
+    if (_order > text.length()) throw std::runtime_error(con_err);
 
     // Parse the alphabet out of the string of text
     std::sort(_alpha.begin(), _alpha.end());
@@ -73,7 +76,7 @@ int MarkovModel::order() {
 }
 
 int MarkovModel::freq(std::string kgram) {
-    if (kgram.length() != _order) throw std::runtime_error(freq_err);
+    if (_order > kgram.length()) throw std::runtime_error(freq_err);
     std::map<std::string, int>::iterator it = _kgrams.find(kgram);
     if (it != _kgrams.end())
         return it-> second;
@@ -82,12 +85,18 @@ int MarkovModel::freq(std::string kgram) {
 }
 
 int MarkovModel::freq(std::string kgram, char c) {
-    if (kgram.length() != _order) throw std::runtime_error(freq_err);
-   
+    int frequency = 0;
+    if (_order == 0) {
+        for (int i = 0; i < _alpha.length(); i++) {
+            if (_alpha.at(i) == c) frequency++;
+        }
+        return frequency;
+    } else {
+        if (_order != kgram.length()) throw std::runtime_error(freq_err);
+    }
+
     std::string str(1, c);
     std::string kplus = kgram + str;
-
-    std::cout << kplus << std::endl;
 
     std::map<std::string, int>::iterator it = _kgrams.find(kplus);
     if (it != _kgrams.end()) {

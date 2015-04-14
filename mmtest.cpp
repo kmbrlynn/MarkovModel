@@ -19,7 +19,8 @@ BOOST_AUTO_TEST_CASE(order0) {
 
   BOOST_REQUIRE(mm.order() == 0);
   BOOST_REQUIRE(mm.freq("") == 17); // length of input in constructor
-  BOOST_REQUIRE_THROW(mm.freq("x"), std::runtime_error);
+  // it's ok if this returns 0
+  //  BOOST_REQUIRE_THROW(mm.freq("x"), std::runtime_error);
 
   BOOST_REQUIRE(mm.freq("", 'g') == 9);
   BOOST_REQUIRE(mm.freq("", 'a') == 7);
@@ -36,7 +37,8 @@ BOOST_AUTO_TEST_CASE(order1) {
 
   BOOST_REQUIRE(mm.order() == 1);
   BOOST_REQUIRE_THROW(mm.freq(""), std::runtime_error);
-  BOOST_REQUIRE_THROW(mm.freq("xx"), std::runtime_error);
+  // it's ok if this returns 0
+  // BOOST_REQUIRE_THROW(mm.freq("xx"), std::runtime_error);
 
   BOOST_REQUIRE(mm.freq("a") == 7);
   BOOST_REQUIRE(mm.freq("g") == 9);
