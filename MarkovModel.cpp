@@ -21,20 +21,27 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
     for (unsigned int i = 0; i < text.length(); i++) {
         std::string kgram_str, kplus_str, wrap_str;
         int wrap_back;
-        
+
         kgram_back = i+k;
-        kplus_back = kgram_back + 1;
        
         // Get current kgram: wraparound + append, if necessary
-        // then put it in the map, or tally existing one
+        // Get current kplus:
         if (kgram_back >= text.length()) { 
             wrap_back = kgram_back - text.length();
             wrap_str = text.substr(0, wrap_back);
             kgram_str = text.substr(i, text.length()-1);
-            kgram_str.append(wrap_str); 
-        } else kgram_str = text.substr(i, k);       
-        std::cout << "got kgram: " << kgram_str << std::endl;
-        
+            kgram_str.append(wrap_str);
+            kplus_str = kgram_str + text.at(wrap_back+1);
+        } else {
+            kgram_str = text.substr(i, k); 
+            if (kgram_back+1 == text.length()) {
+                kplus_str = kgram_str + text.at(0);
+            } else {
+                kplus_str = text.substr(i, k+1);
+            }
+        }
+
+        // Put kgrams in the map
         std::map<std::string, int>::iterator kg_it = _kgrams.find(kgram_str);
         if (kg_it != _kgrams.end()) {
             kg_it-> second += 1;
@@ -44,16 +51,11 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
             std::cout << "created kgram " << kgram_str << std::endl; 
         }
 
-        // Get current kplus-one-gram: based on current kgram
-        // then put it in the map, or tally existing one
-        if (kplus_back == text.length()) kplus_back = text.at(0);   
-        kplus_str = kgram_str + text.at(kplus_back);
-        std::cout << "got kplus: " << kplus_str << std::endl;
-
+        // Put k-plus-one-grams in the map
         std::map<std::string, int>::iterator kp_it = _kgrams.find(kplus_str);
         if (kp_it != _kgrams.end()) {
             kp_it-> second += 1;
-            std::cout << "tallied kplus: " << kgram_str << std::endl;
+            std::cout << "tallied kplus: " << kplus_str << std::endl;
         } else {
             _kgrams[kplus_str] = 1;
             std::cout << "created kplus " << kplus_str << std::endl;
