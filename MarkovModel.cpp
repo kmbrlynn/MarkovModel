@@ -107,18 +107,18 @@ std::string MarkovModel::gen(std::string kgram, int t) {
 
 // ==================================================================== friends
 std::ostream& operator << (std::ostream& os, MarkovModel& mm) {
-    std::cout << "Order = " << mm._order << std::endl;
-
+    std::cout << std::endl << "Order = " << mm._order << std::endl;
+    
     std::map<std::string, int>::iterator it;
     for (it = mm._kgrams.begin(); it != mm._kgrams.end(); ++it) {
         if (it->first.length() == mm._order) {
-            std::cout << "kgram: ";
-            std::cout << it->first << " | " << "frequency: " << it->second;
             std::cout << std::endl;
-        }
-        if (it->first.length() == mm._order+1) {
-            std::cout << "    k+1gram: ";
-            std::cout << it->first << " ---> " << it->second;
+            std::cout << "kgram:      ";
+            std::cout << it->first << "   |  frequency: " << it->second;
+            std::cout << std::endl;
+        } else {
+            std::cout << "            ";
+            std::cout << it->first << "  ----------->  " << it->second;
             std::cout << std::endl;
         }
     }
