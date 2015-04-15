@@ -7,6 +7,8 @@
 int main(int argc, char* argv[]) {
     srand(time(NULL));
 
+    // this is still a test
+
     MarkovModel mm("gagggagaggcgagaaa", 1);
     std::cout << mm << std::endl;
 

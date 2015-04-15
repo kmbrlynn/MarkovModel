@@ -69,7 +69,7 @@ int MarkovModel::order() {
 }
 
 int MarkovModel::freq(std::string kgram) {
-    if (_order > kgram.length()) throw std::runtime_error(freq_err);
+    if (_order != kgram.length()) throw std::runtime_error(freq_err);
     std::map<std::string, int>::iterator it = _kgrams.find(kgram);
     if (it != _kgrams.end())
         return it-> second;
@@ -130,7 +130,7 @@ std::string MarkovModel::gen(std::string kgram, int t) {
 // ==================================================================== friends
 std::ostream& operator << (std::ostream& os, MarkovModel& mm) {
     std::cout << std::endl << "Order = " << mm._order << std::endl;
-    std::cout << "Available alphabet = " << _alpha << std::endl;
+    std::cout << "Available alphabet = " << mm._alpha << std::endl;
 
     std::map<std::string, int>::iterator it;
     for (it = mm._kgrams.begin(); it != mm._kgrams.end(); ++it) {
