@@ -12,14 +12,16 @@ int main(int argc, char* argv[]) {
     std::cin >> input;
 
     MarkovModel mm(input, k);
-//    std::cout << mm << std::endl;
+  // MarkovModel mm("gagggagaggcgagaaa", 0);
+    std::cout << mm << std::endl;
 
     srand(time(NULL));
-    kgram = input.substr(0, k);
+    kgram = input.substr(0, t);
     std::string generated_text = mm.gen(kgram, t);
    
-    std::cout << "Original:  " << input << std::endl;
-    std::cout << "Generated: " << generated_text << std::endl;
+    std::cout << "Original string:  " << input << std::endl;
+    std::cout << "Generated string: " << generated_text << std::endl;
+    std::cout << std::endl;
 
     return 0;
 }

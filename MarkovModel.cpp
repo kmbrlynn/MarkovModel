@@ -9,7 +9,7 @@
 #include "MarkovModel.hpp"
 
 std::string freq_err = "freq(string, [int]): kgram length must == order";
-std::string con_err = "constructor: test must be at least as long as order";
+std::string con_err = "constructor: order may not exceed length of input text";
 std::string kgram_err = "freq(std::string): kgram does not exist in text";
 
 // ============================================================ con/destructors
@@ -127,12 +127,18 @@ char MarkovModel::randk(std::string kgram) {
 std::string MarkovModel::gen(std::string kgram, int t) {
     std::string gen_text = kgram;
 
-    while(gen_text.length()-1 < t) {
+    if (_order == 0 && t == 0)
+        return _text;
+
+    while (gen_text.length() < t) {
+        std::cout << "gen_text length = " << gen_text.length() << std::endl;
         char c = randk(kgram);
         std::string str(1, c);
+        gen_text.append(str);
+        if (_order > 0) {
+            kgram = kgram.substr(1);
+        } else {kgram = kgram;}
         std::string next_gram = kgram + str;
-        next_gram.erase(next_gram.begin());
-        gen_text.append(next_gram);
         kgram = next_gram;
     }
     return gen_text;
