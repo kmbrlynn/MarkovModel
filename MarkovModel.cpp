@@ -10,6 +10,7 @@
 
 std::string freq_err = "freq(string, [int]): kgram length musn't exceed order";
 std::string con_err = "constructor: test must be at least as long as order";
+std::string kgram_err = "freq(std::string): kgram does not exist in text";
 
 // ============================================================ con/destructors
 MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) { 
@@ -112,8 +113,12 @@ int MarkovModel::freq(std::string kgram, char c) {
 
 char MarkovModel::randk(std::string kgram) {
     std::vector<char> char_distribution;
-    int kgram_freq = freq(kgram);
+    int kgram_freq;
     int rand_index;
+
+    if (freq(kgram) == 0) {
+        throw std::runtime_error(kgram_err);
+    } else kgram_freq = freq(kgram);
 
     // for each letter in the available alphabet
     for (unsigned int i = 0; i < _alpha.length(); i++) {

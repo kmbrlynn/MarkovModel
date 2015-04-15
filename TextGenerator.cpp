@@ -12,8 +12,8 @@ int main(int argc, char* argv[]) {
     MarkovModel mm("gagggagaggcgagaaa", 1);
     std::cout << mm << std::endl;
 
-    char randchar = mm.randk("a");
-    std::cout << "rand char = " << randchar << std::endl;
+//    char randchar = mm.randk("a");
+  //  std::cout << "rand char = " << randchar << std::endl;
 
 	return 0;
 }
