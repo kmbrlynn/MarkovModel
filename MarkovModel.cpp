@@ -13,9 +13,9 @@ std::string con_err = "constructor: test must be at least as long as order";
 std::string kgram_err = "freq(std::string): kgram does not exist in text";
 
 // ============================================================ con/destructors
-MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) { 
+MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
     int kgram_back, kplus_back;
-    
+
     _text = text;
     if (_order > _text.length()) throw std::runtime_error(con_err);
 
@@ -29,7 +29,7 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
         int wrap_len;
 
         kgram_back = i+k-1;  // this is why we start index at 1
-       
+
         // Get current kgram: wraparound + append, if necessary
         // Get current kplus: based on kgram
         if (kgram_back >= text.length()) {
@@ -38,7 +38,7 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
             kgram_str = text.substr(i, text.length()-1) + wrap_str;
             kplus_str = kgram_str + text.at(wrap_len);
         } else {
-            kgram_str = text.substr(i, k); 
+            kgram_str = text.substr(i, k);
             if (kgram_back+1 >= text.length()) {
                 kplus_str = kgram_str + text.at(0);
             } else {
@@ -50,26 +50,13 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
         std::map<std::string, int>::iterator kg_it = _kgrams.find(kgram_str);
         if (kg_it != _kgrams.end()) {
             kg_it-> second += 1;
-//            std::cout << "tallied " << kgram_str;
-//            std::cout << "  | count = " << kg_it-> second << std::endl;
-        } else {
-            _kgrams[kgram_str] = 1;
-//            std::cout << "created " << kgram_str;
-//            std::cout << "  | count = " << kg_it-> second << std::endl; 
-        }
+        } else {_kgrams[kgram_str] = 1;}
 
         // Put k-plus-one-grams in the map
         std::map<std::string, int>::iterator kp_it = _kgrams.find(kplus_str);
         if (kp_it != _kgrams.end()) {
             kp_it-> second += 1;
-//            std::cout << "tallied " << kplus_str;
-//            std::cout << " | count = " << kp_it-> second << std::endl;
-        } else {
-            _kgrams[kplus_str] = 1;
-//            std::cout << "created " << kplus_str;
-//            std::cout << " | count = " << kp_it-> second << std::endl;
-        }
-//        std::cout << std::endl;
+        } else {_kgrams[kplus_str] = 1;}
     }
 }
 
@@ -92,13 +79,13 @@ int MarkovModel::freq(std::string kgram) {
 
 int MarkovModel::freq(std::string kgram, char c) {
     int frequency = 0;
-    
+
     if (_order == 0) {
         for (unsigned int i = 0; i < _text.length(); i++) {
             if (_text.at(i) == c) frequency++;
         } return frequency;
     }
-    
+
     if (_order != kgram.length()) throw std::runtime_error(freq_err);
 
     std::string str(1, c);
@@ -118,7 +105,7 @@ char MarkovModel::randk(std::string kgram) {
 
     if (freq(kgram) == 0) {
         throw std::runtime_error(kgram_err);
-    } else kgram_freq = freq(kgram);
+    } else {kgram_freq = freq(kgram);}
 
     // for each letter in the available alphabet
     for (unsigned int i = 0; i < _alpha.length(); i++) {
@@ -131,25 +118,20 @@ char MarkovModel::randk(std::string kgram) {
             char_distribution.push_back(kplus_c);
         }
     }
-/*
-    std::vector<char>::iterator it;
-    for (it = char_distribution.begin(); it != char_distribution.end(); ++it) {
-        std::cout << *it << std::endl;
-    }    
-*/
-   // return a random character in the distribution vector
-   rand_index = rand() % char_distribution.size();
-   return char_distribution.at(rand_index);
+
+    // return a random character in the distribution vector
+    rand_index = rand() % char_distribution.size();  // NOLINT
+    return char_distribution.at(rand_index);
 }
 
 std::string MarkovModel::gen(std::string kgram, int t) {
-
 }
 
 // ==================================================================== friends
 std::ostream& operator << (std::ostream& os, MarkovModel& mm) {
     std::cout << std::endl << "Order = " << mm._order << std::endl;
-    
+    std::cout << "Available alphabet = " << _alpha << std::endl;
+
     std::map<std::string, int>::iterator it;
     for (it = mm._kgrams.begin(); it != mm._kgrams.end(); ++it) {
         if (it->first.length() == mm._order) {
