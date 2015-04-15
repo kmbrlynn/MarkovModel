@@ -1,5 +1,6 @@
 // Copyright Kim Douglas 2015
 #include <map>
+#include <cmath>
 #include <exception>
 #include <stdexcept>
 #include <iostream>
@@ -13,31 +14,32 @@ std::string con_err = "constructor: test must be at least as long as order";
 // ============================================================ con/destructors
 MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) { 
     int kgram_back, kplus_back;
-
-    if (_order > text.length()) throw std::runtime_error(con_err);
+    
+    _text = text;
+    if (_order > _text.length()) throw std::runtime_error(con_err);
 
     // Parse the alphabet out of the string of text
     std::sort(_alpha.begin(), _alpha.end());
     _alpha.erase(std::unique(_alpha.begin(), _alpha.end()), _alpha.end());
 
     // build k-grams and k-plus-one-grams
-    for (unsigned int i = 0; i < text.length(); i++) {
+    for (unsigned int i = 1; i < text.length()+1; i++) {
         std::string kgram_str, kplus_str, wrap_str;
         int wrap_back;
 
-        kgram_back = i+k;
+        kgram_back = i+k-1;
+  //      std::cout << "kgram_back = " << kgram_back << std::endl;
        
         // Get current kgram: wraparound + append, if necessary
         // Get current kplus: based on kgram
-        if (kgram_back >= text.length()) { 
+        if (kgram_back >= text.length()) {
             wrap_back = kgram_back - text.length();
-            wrap_str = text.substr(0, wrap_back);
-            kgram_str = text.substr(i, text.length()-1);
-            kgram_str.append(wrap_str);
+            wrap_str = text.substr(0, wrap_back+1);
+            kgram_str = text.substr(i, text.length()-1) + wrap_str;
             kplus_str = kgram_str + text.at(wrap_back+1);
         } else {
             kgram_str = text.substr(i, k); 
-            if (kgram_back+1 == text.length()) {
+            if (kgram_back+1 >= text.length()) {
                 kplus_str = kgram_str + text.at(0);
             } else {
                 kplus_str = text.substr(i, k+1);
@@ -48,22 +50,26 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
         std::map<std::string, int>::iterator kg_it = _kgrams.find(kgram_str);
         if (kg_it != _kgrams.end()) {
             kg_it-> second += 1;
- //           std::cout << "tallied kgram: " << kgram_str << std::endl;
+            std::cout << "tallied " << kgram_str;
+            std::cout << "  | count = " << kg_it-> second << std::endl;
         } else {
             _kgrams[kgram_str] = 1;
- //           std::cout << "created kgram " << kgram_str << std::endl; 
+            std::cout << "created " << kgram_str;
+            std::cout << "  | count = " << kg_it-> second << std::endl; 
         }
 
         // Put k-plus-one-grams in the map
         std::map<std::string, int>::iterator kp_it = _kgrams.find(kplus_str);
         if (kp_it != _kgrams.end()) {
             kp_it-> second += 1;
- //           std::cout << "tallied kplus: " << kplus_str << std::endl;
+            std::cout << "tallied " << kplus_str;
+            std::cout << " | count = " << kp_it-> second << std::endl;
         } else {
             _kgrams[kplus_str] = 1;
- //           std::cout << "created kplus " << kplus_str << std::endl;
+            std::cout << "created " << kplus_str;
+            std::cout << " | count = " << kp_it-> second << std::endl;
         }
- //       std::cout << std::endl;
+        std::cout << std::endl;
     }
 }
 
@@ -86,14 +92,14 @@ int MarkovModel::freq(std::string kgram) {
 
 int MarkovModel::freq(std::string kgram, char c) {
     int frequency = 0;
+    
     if (_order == 0) {
-        for (int i = 0; i < _alpha.length(); i++) {
-            if (_alpha.at(i) == c) frequency++;
-        }
-        return frequency;
-    } else {
-        if (_order != kgram.length()) throw std::runtime_error(freq_err);
+        for (unsigned int i = 0; i < _text.length(); i++) {
+            if (_text.at(i) == c) frequency++;
+        } return frequency;
     }
+    
+    if (_order != kgram.length()) throw std::runtime_error(freq_err);
 
     std::string str(1, c);
     std::string kplus = kgram + str;

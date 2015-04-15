@@ -17,6 +17,7 @@ class MarkovModel {
 
  private:
     int _order;
+    std::string _text;
     std::map <std::string, int> _kgrams;
     std::string _alpha;
 };

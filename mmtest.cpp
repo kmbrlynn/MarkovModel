@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(order2) {
   BOOST_REQUIRE(mm.freq("aa", 'c') == 0);
   BOOST_REQUIRE(mm.freq("aa", 'g') == 1);
 
-  BOOST_REQUIRE(mm.freq("ag") == 5);
+  BOOST_REQUIRE(mm.freq("ag") == 5); 
   BOOST_REQUIRE(mm.freq("ag", 'a') == 3);
   BOOST_REQUIRE(mm.freq("ag", 'c') == 0);
   BOOST_REQUIRE(mm.freq("ag", 'g') == 2);
