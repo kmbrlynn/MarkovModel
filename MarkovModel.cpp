@@ -9,7 +9,7 @@
 #include "MarkovModel.hpp"
 
 std::string freq_err = "freq(string, [int]): kgram length must == order";
-std::string con_err = "constructor: order may not exceed length of input text";
+std::string con_err = "constructor: input text must exceed order";
 std::string kgram_err = "freq(std::string): kgram does not exist in text";
 
 // ============================================================ con/destructors
@@ -17,7 +17,7 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
     int kgram_back, kplus_back;
 
     _text = text;
-    if (_order > _text.length()) throw std::runtime_error(con_err);
+    if (_order >= _text.length()) throw std::runtime_error(con_err);
 
     // Parse the alphabet out of the string of text
     std::sort(_alpha.begin(), _alpha.end());
@@ -131,7 +131,6 @@ std::string MarkovModel::gen(std::string kgram, int t) {
         return _text;
 
     while (gen_text.length() < t) {
-        std::cout << "gen_text length = " << gen_text.length() << std::endl;
         char c = randk(kgram);
         std::string str(1, c);
         gen_text.append(str);
