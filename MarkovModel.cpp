@@ -25,7 +25,7 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
     // build k-grams and k-plus-one-grams
     for (unsigned int i = 1; i < text.length()+1; i++) {
         std::string kgram_str, kplus_str, wrap_str;
-        int wrap_back;
+        int wrap_len;
 
         kgram_back = i+k-1;
   //      std::cout << "kgram_back = " << kgram_back << std::endl;
@@ -33,10 +33,10 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
         // Get current kgram: wraparound + append, if necessary
         // Get current kplus: based on kgram
         if (kgram_back >= text.length()) {
-            wrap_back = kgram_back - text.length();
-            wrap_str = text.substr(0, wrap_back+1);
+            wrap_len = kgram_back - text.length() + 1;
+            wrap_str = text.substr(0, wrap_len);
             kgram_str = text.substr(i, text.length()-1) + wrap_str;
-            kplus_str = kgram_str + text.at(wrap_back+1);
+            kplus_str = kgram_str + text.at(wrap_len);
         } else {
             kgram_str = text.substr(i, k); 
             if (kgram_back+1 >= text.length()) {
@@ -50,26 +50,26 @@ MarkovModel::MarkovModel(std::string text, int k) : _order(k), _alpha(text) {
         std::map<std::string, int>::iterator kg_it = _kgrams.find(kgram_str);
         if (kg_it != _kgrams.end()) {
             kg_it-> second += 1;
-            std::cout << "tallied " << kgram_str;
-            std::cout << "  | count = " << kg_it-> second << std::endl;
+//            std::cout << "tallied " << kgram_str;
+//            std::cout << "  | count = " << kg_it-> second << std::endl;
         } else {
             _kgrams[kgram_str] = 1;
-            std::cout << "created " << kgram_str;
-            std::cout << "  | count = " << kg_it-> second << std::endl; 
+//            std::cout << "created " << kgram_str;
+//            std::cout << "  | count = " << kg_it-> second << std::endl; 
         }
 
         // Put k-plus-one-grams in the map
         std::map<std::string, int>::iterator kp_it = _kgrams.find(kplus_str);
         if (kp_it != _kgrams.end()) {
             kp_it-> second += 1;
-            std::cout << "tallied " << kplus_str;
-            std::cout << " | count = " << kp_it-> second << std::endl;
+//            std::cout << "tallied " << kplus_str;
+//            std::cout << " | count = " << kp_it-> second << std::endl;
         } else {
             _kgrams[kplus_str] = 1;
-            std::cout << "created " << kplus_str;
-            std::cout << " | count = " << kp_it-> second << std::endl;
+//            std::cout << "created " << kplus_str;
+//            std::cout << " | count = " << kp_it-> second << std::endl;
         }
-        std::cout << std::endl;
+//        std::cout << std::endl;
     }
 }
 
