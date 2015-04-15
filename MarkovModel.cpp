@@ -111,15 +111,30 @@ int MarkovModel::freq(std::string kgram, char c) {
 }
 
 char MarkovModel::randk(std::string kgram) {
-    // find the total number of kgrams
+    std::vector<char> char_distribution;
     int kgram_freq = freq(kgram);
-   
-    // find the total numbers of each of the k-plus-one-grams 
-    std::vector<int> kplus_freqs;
-    for (unsigned int i = 0; i < _alpha.length(); i++) {
-        
-    }
+    int rand_index;
 
+    // for each letter in the available alphabet
+    for (unsigned int i = 0; i < _alpha.length(); i++) {
+        // find how many times the current letter
+        // follows this kgram
+        char kplus_c = _alpha.at(i);
+        int kplus_f = freq(kgram, kplus_c);
+        // push that many letters to the char dist vector
+        for (int j = 0; j < kplus_f; j++) {
+            char_distribution.push_back(kplus_c);
+        }
+    }
+/*
+    std::vector<char>::iterator it;
+    for (it = char_distribution.begin(); it != char_distribution.end(); ++it) {
+        std::cout << *it << std::endl;
+    }    
+*/
+   // return a random character in the distribution vector
+   rand_index = rand() % char_distribution.size();
+   return char_distribution.at(rand_index);
 }
 
 std::string MarkovModel::gen(std::string kgram, int t) {
